@@ -9,10 +9,23 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+
+
 public class CreateTable {
     private static String word;
     private static int currentRow;
     private static int currentColumn;
+    public static int columnsNum;
+    public static int rowsNum;
+    public static boolean right = false;
+    public static boolean down = true;
+    public static boolean stop = false;
+    public static TableItem[] tableItems;
+
+    private void createElements(){
+
+    }
+
     public void create(Shell shell, Composite checkBoxButtons){
         Group group = new Group(shell, SWT.NONE);
         group.setText("Table");
@@ -60,8 +73,8 @@ public class CreateTable {
                     errorRowsColumns.setMessage("Enter column or row.");
                     errorRowsColumns.open();
                 } else {
-                    int columnsNum = Integer.parseInt(textColumns.getText());
-                    int rowsNum = Integer.parseInt(textRows.getText());
+                    columnsNum = Integer.parseInt(textColumns.getText());
+                    rowsNum = Integer.parseInt(textRows.getText());
                     textColumns.setText("");
                     textRows.setText("");
                     Table table = new Table(group, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
@@ -151,6 +164,34 @@ public class CreateTable {
                         public void widgetDefaultSelected(SelectionEvent selectionEvent) {
                         }
                     });
+
+                    startButton.addSelectionListener(new SelectionListener() {
+                        @Override
+                        public void widgetSelected(SelectionEvent selectionEvent) {
+
+                            MoveItems moveItems = new MoveItems();
+                            moveItems.magic(tableItems);
+                        }
+
+                        @Override
+                        public void widgetDefaultSelected(SelectionEvent selectionEvent) {
+
+                        }
+                    });
+
+                    stopButton.addSelectionListener(new SelectionListener() {
+                        @Override
+                        public void widgetSelected(SelectionEvent selectionEvent) {
+                            stop = true;
+                        }
+
+                        @Override
+                        public void widgetDefaultSelected(SelectionEvent selectionEvent) {
+
+                        }
+                    });
+
+
                 }
             }
 
@@ -160,5 +201,9 @@ public class CreateTable {
             }
 
         });
+
+
+
+
     }
 }

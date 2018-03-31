@@ -17,6 +17,7 @@ public class CreateWindow {
         Composite changeButtons = new Composite(shell, SWT.NONE);
         Composite radioButtons = new Composite(shell, SWT.NONE);
         Composite checkBoxButtons = new Composite(shell, SWT.NONE);
+
         new CreateCombo().create(shell, compositeComboBoxAndCo);
         new CreateChangingButtons().create(changeButtons, compositeComboBoxAndCo);
         new CreateRadio().create(shell, radioButtons, changeButtons);

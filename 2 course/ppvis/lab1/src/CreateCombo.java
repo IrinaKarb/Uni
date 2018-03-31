@@ -3,6 +3,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
+
 public class CreateCombo {
     public void create(Shell shell, Composite compositeComboBoxAndCo) {
         Group group = new Group(compositeComboBoxAndCo, SWT.NONE);
