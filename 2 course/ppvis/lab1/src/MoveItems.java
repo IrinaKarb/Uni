@@ -7,68 +7,65 @@ public class MoveItems extends CreateTable {
     private int currentColumn;
     private int currentRow;
     private String currentWord;
-    //private MoveItems[] moveItems = new MoveItems[tableItems.length];
-
-    MoveItems(){
-        isMovedRight = false;
-        isMovedDown = true;
-    }
 
     public void magic(TableItem[] tableItems){
         (new Thread(new Runnable() {
             @Override
             public void run() {
+
                 do {
                     Display.getDefault().asyncExec(new Runnable() {
                         @Override
                         public void run() {
-                            for (int i = 0; i < columnsNum; i++) {
-                                for (int j = 0; j < rowsNum; j++) {
+                            for (int it = (arrayList.size() - 1); it >= 0; it--) {
+                                if (!arrayList.get(it).getRight()) {
+                                    if (arrayList.get(it).getCurrentColumn() == (columnsNum - 1)) {
+                                        tableItems[arrayList.get(it).getCurrentRow()].setText(0, arrayList.get(it).getCurrentWord());
+                                        tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn(), "");
 
+                                        changeItem(it, arrayList.get(it).getDown(), arrayList.get(it).getCurrentRow(), 0);
 
-
-                                    if (!tableItems[j].getText(i).equals("")) {
-                                        String curWord = tableItems[j].getText(i);
-                                        if (!right) {
-                                            if (!tableItems[j].getText(i + 1).equals("")) {
-                                                tableItems[j].setText(i + 2, tableItems[j].getText(i + 1));
-                                                tableItems[j].setText(i + 1, "");
-                                            }
-                                            if (i == (columnsNum - 1)) {
-                                                tableItems[j].setText(0, curWord);
-                                                tableItems[j].setText(i, "");
-                                                //i = 0;
-                                                right = true;
-                                                down = false;
-                                                return;
-                                            }
-                                            tableItems[j].setText(i + 1, curWord);
-                                            tableItems[j].setText(i, "");
-                                            right = true;
-                                            down = false;
-                                            return;
-                                        }
-                                        if (!down) {
-                                            if (j == (rowsNum - 1)) {
-                                                tableItems[0].setText(i, curWord);
-                                                tableItems[j].setText(i, "");
-                                                //i = 0;
-                                                down = true;
-                                                right = false;
-                                                return;
-                                            }
-                                            tableItems[j + 1].setText(i, curWord);
-                                            tableItems[j].setText(i, "");
-                                            down = true;
-                                            right = false;
-                                            return;
-                                        }
+                                        continue;
                                     }
+                                    if (checkCell(it) != -1) {
 
+                                        changeItem(it, arrayList.get(it).getDown());
+                                        tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn() + 1, arrayList.get(it).getCurrentWord() + ", " + arrayList.get(checkCell(it)).getCurrentWord());
+                                        tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn(), "");
+                                        continue;
+
+                                    }
+                                    tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn() + 1, arrayList.get(it).getCurrentWord());
+                                    tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn(), "");
+                                    changeItem(it, arrayList.get(it).getDown());
+                                    continue;
                                 }
+
+                                if (!arrayList.get(it).getDown()) {
+                                    if (arrayList.get(it).getCurrentRow() == (rowsNum - 1)) {
+                                        tableItems[0].setText(arrayList.get(it).getCurrentColumn(), arrayList.get(it).getCurrentWord());
+                                        tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn(), "");
+                                        changeItem(it, arrayList.get(it).getDown(), 0, arrayList.get(it).getCurrentColumn());
+                                        continue;
+                                    }
+                                    if (checkCell(it) != -1) {
+
+                                        changeItem(it, arrayList.get(it).getDown());
+                                        tableItems[arrayList.get(it).getCurrentRow() + 1].setText(arrayList.get(it).getCurrentColumn(), arrayList.get(it).getCurrentWord() + ", " + arrayList.get(checkCell(it)).getCurrentWord());
+                                        tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn(), "");
+                                        continue;
+
+                                    }
+                                    tableItems[arrayList.get(it).getCurrentRow() + 1].setText(arrayList.get(it).getCurrentColumn(), arrayList.get(it).getCurrentWord());
+                                    tableItems[arrayList.get(it).getCurrentRow()].setText(arrayList.get(it).getCurrentColumn(), "");
+                                    changeItem(it, arrayList.get(it).getDown());
+                                    continue;
+                                }
+
                             }
 
                         }
+
                     });
                     try {
                         Thread.currentThread().sleep(1000);
@@ -80,26 +77,41 @@ public class MoveItems extends CreateTable {
         })).start();
     }
 
-    public void moveRight(TableItem[] tableItems, int column, int row){
-        if (!tableItems[row].getText().equals("")) {
-            String curWord = tableItems[row].getText(column);
-            System.out.println(curWord);
-        /*if (!tableItems[row].getText(column + 1).equals("")) {
-            tableItems[row].setText(column + 2, tableItems[j].getText(i + 1));
-            tableItems[j].setText(i + 1, "");
-        }*/
-            if (column == (columnsNum - 1)) {
-                tableItems[row].setText(0, curWord);
-                tableItems[row].setText(column, "");
-                return;
-            }
-            tableItems[row].setText(column + 1, curWord);
-            tableItems[row].setText(column, "");
-            return;
-        }
+    MoveItems(int currentRow, int currentColumn, String currentWord, boolean isMovedRight, boolean isMovedDown){
+        this.currentRow = currentRow;
+        this.currentColumn = currentColumn;
+        this.currentWord = currentWord;
+        this.isMovedRight = isMovedRight;
+        this.isMovedDown = isMovedDown;
     }
 
-    public void moveDown(){
+    public static void changeItem(int it, boolean isMovedDown){
+
+        if (isMovedDown)
+            moveItems = new MoveItems(arrayList.get(it).getCurrentRow(), arrayList.get(it).getCurrentColumn() + 1, arrayList.get(it).getCurrentWord(), true, false);
+        else moveItems = new MoveItems(arrayList.get(it).getCurrentRow() + 1, arrayList.get(it).getCurrentColumn(), arrayList.get(it).getCurrentWord(), false, true);
+
+        arrayList.remove(it);
+        arrayList.add(it, moveItems);
+    }
+
+    public static void changeItem(int it, boolean isMovedDown, int row, int column) {
+        if (isMovedDown)
+            moveItems = new MoveItems(row, column, arrayList.get(it).getCurrentWord(), true, false);
+        else moveItems = new MoveItems(row, column, arrayList.get(it).getCurrentWord(), false, true);
+
+        arrayList.remove(it);
+        arrayList.add(it, moveItems);
+    }
+
+    public static int checkCell(int currentIt) {
+        for (int i = 0; i < arrayList.size(); i++) {
+            if (i != currentIt) {
+                if (arrayList.get(i).getCurrentRow() == arrayList.get(currentIt).getCurrentRow() && arrayList.get(i).getCurrentColumn() == arrayList.get(currentIt).getCurrentColumn())
+                    return i;
+            }
+        }
+        return -1;
 
     }
 
@@ -111,24 +123,15 @@ public class MoveItems extends CreateTable {
         return currentRow;
     }
 
-    public void setCurrentColumn(int currentColumn) {
-        this.currentColumn = currentColumn;
-    }
-
-    public void setCurrentRow(int currentRow) {
-        this.currentRow = currentRow;
-    }
-
     public String getCurrentWord() {
         return currentWord;
     }
 
-    public void setCurrentWord(String currentWord) {
-        this.currentWord = currentWord;
+    public boolean getRight() {
+        return isMovedRight;
     }
 
-    /*public void setMoveItems() {
-        for (int i = 0; i < moveItems.length; i++)
-            moveItems[i] = new MoveItems();
-    }*/
+    public boolean getDown() {
+        return isMovedDown;
+    }
 }

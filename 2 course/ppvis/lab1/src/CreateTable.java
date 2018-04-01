@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+import java.util.ArrayList;
 
 
 public class CreateTable {
@@ -17,10 +18,10 @@ public class CreateTable {
     private static int currentColumn;
     public static int columnsNum;
     public static int rowsNum;
-    public static boolean right = false;
-    public static boolean down = true;
-    public static boolean stop = false;
+    public static boolean stop;
     public static TableItem[] tableItems;
+    public static MoveItems moveItems;
+    public static ArrayList<MoveItems> arrayList;
 
     private void createElements(){
 
@@ -64,6 +65,10 @@ public class CreateTable {
         FormData data = new FormData();
         data.left = new FormAttachment(checkBoxButtons, 0);
         group.setLayoutData(data);
+
+        arrayList = new ArrayList<>();
+
+
         createTable.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
@@ -109,7 +114,9 @@ public class CreateTable {
                         @Override
                         public void widgetSelected(SelectionEvent selectionEvent) {
                             tableItems[currentRow].setText(currentColumn, text.getText());
+                            moveItems = new MoveItems(currentRow, currentColumn, text.getText(), false, true);
                             text.setText("");
+                            arrayList.add(moveItems);
                         }
 
                         @Override
@@ -168,8 +175,7 @@ public class CreateTable {
                     startButton.addSelectionListener(new SelectionListener() {
                         @Override
                         public void widgetSelected(SelectionEvent selectionEvent) {
-
-                            MoveItems moveItems = new MoveItems();
+                            stop = false;
                             moveItems.magic(tableItems);
                         }
 
