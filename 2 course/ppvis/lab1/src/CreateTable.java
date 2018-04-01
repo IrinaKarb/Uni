@@ -13,6 +13,26 @@ import java.util.ArrayList;
 
 
 public class CreateTable {
+    private static Group group;
+    private static Composite taskTextAndButtons;
+    private static Composite sizeTable;
+    private static MessageBox messageBox;
+    private static Table table;
+    private static Text text;
+    private static Text textColumns;
+    private static Text textRows;
+    private static Button submitButton;
+    private static Button firstColumnButton;
+    private static Button fromFirstToSecondButton;
+    private static Button fromSecondToFirstButton;
+    private static Button createTable;
+    private static Button startButton;
+    private static Button stopButton;
+    private static Label currentCell;
+    private static Label labelColumns;
+    private static Label labelRows;
+    private static GridLayout gridLayout;
+    private static FormData data;
     private static String word;
     private static int currentRow;
     private static int currentColumn;
@@ -23,52 +43,53 @@ public class CreateTable {
     public static MoveItems moveItems;
     public static ArrayList<MoveItems> arrayList;
 
-    private void createElements(){
+    private static void createElements(Shell shell){
+        group = new Group(shell, SWT.NONE);
+        taskTextAndButtons = new Composite(group, SWT.NONE);
+        messageBox = new MessageBox(shell, SWT.APPLICATION_MODAL | SWT.OK);
+        text = new Text(taskTextAndButtons, SWT.BORDER);
+        submitButton = new Button(taskTextAndButtons, SWT.PUSH);
+        currentCell = new Label(taskTextAndButtons, SWT.HORIZONTAL);
+        firstColumnButton = new Button(taskTextAndButtons, SWT.PUSH);
+        fromFirstToSecondButton = new Button(taskTextAndButtons, SWT.PUSH);
+        fromSecondToFirstButton = new Button(taskTextAndButtons, SWT.PUSH);
+        createTable = new Button(taskTextAndButtons, SWT.PUSH);
+        sizeTable = new Composite(group, SWT.NONE);
+        labelColumns = new Label(sizeTable, SWT.HORIZONTAL);
+        textColumns = new Text(sizeTable, SWT.BORDER);
+        labelRows = new Label(sizeTable, SWT.HORIZONTAL);
+        textRows = new Text(sizeTable, SWT.BORDER);
+        startButton = new Button(sizeTable, SWT.PUSH);
+        stopButton = new Button(sizeTable, SWT.PUSH);
+        data = new FormData();
+    }
 
+    public static void setFifthTaskElements() {
+        group.setText("Table");
+        taskTextAndButtons.setLayout(new FillLayout(SWT.VERTICAL));
+        messageBox.setText("Warning!");
+        messageBox.setMessage("Select the text.");
+        submitButton.setText("Submit");
+        firstColumnButton.setText("To First Column");
+        fromFirstToSecondButton.setText("From 1 to 2");
+        fromSecondToFirstButton.setText("From 2 to 1");
     }
 
     public void create(Shell shell, Composite checkBoxButtons){
-        Group group = new Group(shell, SWT.NONE);
-        group.setText("Table");
-        Composite taskTextAndButtons = new Composite(group, SWT.NONE);
-        taskTextAndButtons.setLayout(new FillLayout(SWT.VERTICAL));
-        MessageBox messageBox = new MessageBox(shell, SWT.APPLICATION_MODAL | SWT.OK);
-        messageBox.setText("Warning!");
-        messageBox.setMessage("Select the text.");
-        Text text = new Text(taskTextAndButtons, SWT.BORDER);
-        Button submitButton = new Button(taskTextAndButtons, SWT.PUSH);
-        submitButton.setText("Submit");
-        Label currentCell = new Label(taskTextAndButtons, SWT.HORIZONTAL);
-        Button firstColumnButton = new Button(taskTextAndButtons, SWT.PUSH);
-        firstColumnButton.setText("To First Column");
-        Button fromFirstToSecondButton = new Button(taskTextAndButtons, SWT.PUSH);
-        fromFirstToSecondButton.setText("From 1 to 2");
-        Button fromSecondToFirstButton = new Button(taskTextAndButtons, SWT.PUSH);
-        fromSecondToFirstButton.setText("From 2 to 1");
-        Button createTable = new Button(taskTextAndButtons, SWT.PUSH);
+        CreateTable.createElements(shell);
+        CreateTable.setFifthTaskElements();
         createTable.setText("Create Table");
-        Composite sizeTable = new Composite(group, SWT.NONE);
-        Label labelColumns = new Label(sizeTable, SWT.HORIZONTAL);
         labelColumns.setText("Columns: ");
-        Text textColumns = new Text(sizeTable, SWT.BORDER);
-        Label labelRows = new Label(sizeTable, SWT.HORIZONTAL);
         labelRows.setText("Rows: ");
-        Text textRows = new Text(sizeTable, SWT.BORDER);
-        GridLayout gridLayout = new GridLayout();
-        Button startButton = new Button(sizeTable, SWT.PUSH);
+        gridLayout = new GridLayout();
         startButton.setText("Start");
-        Button stopButton = new Button(sizeTable, SWT.PUSH);
         stopButton.setText("Stop");
         gridLayout.numColumns = 2;
         sizeTable.setLayout(gridLayout);
         group.setLayout(new FillLayout(SWT.VERTICAL));
-        FormData data = new FormData();
         data.left = new FormAttachment(checkBoxButtons, 0);
         group.setLayoutData(data);
-
         arrayList = new ArrayList<>();
-
-
         createTable.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
@@ -82,12 +103,10 @@ public class CreateTable {
                     rowsNum = Integer.parseInt(textRows.getText());
                     textColumns.setText("");
                     textRows.setText("");
-                    Table table = new Table(group, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+                    table = new Table(group, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
                     table.setLinesVisible(true);
-                    table.setHeaderVisible(true);
                     for (int i = 0; i < columnsNum; i++) {
                         TableColumn column = new TableColumn(table, SWT.NONE);
-                        column.setText("Column " + (i + 1));
                         column.setWidth(100);
                     }
                     for (int i = 0; i <rowsNum; i++) {
@@ -118,13 +137,13 @@ public class CreateTable {
                             text.setText("");
                             arrayList.add(moveItems);
                         }
-
                         @Override
                         public void widgetDefaultSelected(SelectionEvent selectionEvent) {
                         }
                     });
                     shell.pack();
                     group.pack();
+                    table.pack();
                     firstColumnButton.addSelectionListener(new SelectionListener() {
                         @Override
                         public void widgetSelected(SelectionEvent selectionEvent) {
@@ -196,8 +215,6 @@ public class CreateTable {
 
                         }
                     });
-
-
                 }
             }
 
@@ -207,9 +224,5 @@ public class CreateTable {
             }
 
         });
-
-
-
-
     }
 }
